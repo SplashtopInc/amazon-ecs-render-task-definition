@@ -13,6 +13,9 @@ inputs:
   image:
     description: 'The URI of the container image to insert into the ECS task definition'
     required: true
+  overwritten-envs:
+    description: 'The environment variables to overwrite the variables defined in the environment of the containerDefinitions section. Separated by "," . You should define these variables in job.<job_id>.steps.env as well.'
+    required: false
 outputs:
   task-definition:
     description: 'The path to the rendered task definition file'
