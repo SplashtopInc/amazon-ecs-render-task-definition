@@ -1,4 +1,4 @@
-## Amazon ECS "Render Task Definition" Action for GitHub Actions
+## Amazon ECS "Render Task Definition" Action for GitHub Actions (+ Environment Overwritten)
 
 Inserts a container image URI into an Amazon ECS task definition JSON file, creating a new task definition file.
 
@@ -20,10 +20,14 @@ To insert the image URI `amazon/amazon-ecs-sample:latest` as the image for the `
     - name: Render Amazon ECS task definition
       id: render-web-container
       uses: aws-actions/amazon-ecs-render-task-definition@v1
+      env:
+        FOO: foofoo
+        BAR: barbaz
       with:
         task-definition: task-definition.json
         container-name: web
         image: amazon/amazon-ecs-sample:latest
+        overwritten-envs: FOO,BAR
 
     - name: Deploy to Amazon ECS service
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
