@@ -1089,6 +1089,7 @@ async function run() {
     const taskDefinitionFile = core.getInput('task-definition', { required: true });
     const containerName = core.getInput('container-name', { required: true });
     const imageURI = core.getInput('image', { required: true });
+    const overwrittenEnvList = core.getInput('overwritten-envs');
 
     // Parse the task definition
     const taskDefPath = path.isAbsolute(taskDefinitionFile) ?
@@ -1110,6 +1111,27 @@ async function run() {
       throw new Error('Invalid task definition: Could not find container definition with matching name');
     }
     containerDef.image = imageURI;
+
+    // Setup container environment
+    if (overwrittenEnvList != '') {
+      const oriEnvs = containerDef.environment;
+      let overwrittenEnvNames = overwrittenEnvList.split(',');
+      const newEnvs = [];
+      oriEnvs.forEach((oriEnv) => {
+        const oriEnvName = oriEnv['name'];
+        const foundNameIndex = overwrittenEnvNames.indexOf(oriEnvName);
+        if (foundNameIndex >= 0) {
+          newEnvs.push({ name: oriEnvName, value: process.env[oriEnvName] });
+          overwrittenEnvNames.splice(foundNameIndex, 1);
+        } else {
+          newEnvs.push(oriEnv);
+        }
+      });
+      overwrittenEnvNames.forEach((newEnvName) => {
+        newEnvs.push({ name: newEnvName, value: process.env[newEnvName] });
+      });
+      containerDef.environment = newEnvs;
+    }
 
     // Write out a new task definition file
     var updatedTaskDefFile = tmp.fileSync({
