@@ -28,6 +28,7 @@ To insert the image URI `amazon/amazon-ecs-sample:latest` as the image for the `
         container-name: web
         image: amazon/amazon-ecs-sample:latest
         overwritten-envs: FOO,BAR
+        environment-variables: "LOG_LEVEL=info"
 
     - name: Deploy to Amazon ECS service
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -50,6 +51,9 @@ input of the second:
         task-definition: task-definition.json
         container-name: web
         image: amazon/amazon-ecs-sample-1:latest
+        environment-variables: |
+            LOG_LEVEL=info
+            ENVIRONMENT=prod
 
     - name: Modify Amazon ECS task definition with second container
       id: render-app-container
