@@ -9,9 +9,8 @@ async function run() {
     const taskDefinitionFile = core.getInput('task-definition', { required: true });
     const containerName = core.getInput('container-name', { required: true });
     const imageURI = core.getInput('image', { required: true });
-    const overwrittenEnvList = core.getInput('overwritten-envs');
-
     const environmentVariables = core.getInput('environment-variables', { required: false });
+    const overwrittenEnvList = core.getInput('overwritten-envs');
 
     // Parse the task definition
     const taskDefPath = path.isAbsolute(taskDefinitionFile) ?
@@ -35,7 +34,7 @@ async function run() {
     containerDef.image = imageURI;
 
     // Setup container environment
-    if (overwrittenEnvList != '') {
+    if (overwrittenEnvList) {
       const oriEnvs = containerDef.environment;
       let overwrittenEnvNames = overwrittenEnvList.split(',');
       const newEnvs = [];
